@@ -143,7 +143,8 @@
 </div>
 
 <script>
-// 密探数据
+    
+// 1. 密探数据选择列表
 function sortByPinyin(arr) {
     return arr.slice().sort((a, b) => a.localeCompare(b, 'zh-Hans-CN'));
 }
@@ -362,7 +363,8 @@ const spyImageDataset = {
     "default": "https://via.placeholder.com/80"
 };
 
-// 生成密探角色输入表（垂直布局）
+
+// 2. 生成密探信息输入表（垂直布局）
 function generateCharacterInputs() {
     const count = parseInt(document.getElementById('character-count').value);
     const container = document.getElementById('character-inputs');
@@ -456,7 +458,7 @@ function generateCharacterInputs() {
 }
 
 
-// 2. Update the updateAstroOptions function to limit selection to 3
+// 3. 密探命盘个数选择限制
 function updateAstroOptions(index) {
     const selectedSpy = document.getElementById(`char-name-${index}`).value;
     const astroGroup = document.getElementById(`astro-group-${index}`);
@@ -477,8 +479,6 @@ function updateAstroOptions(index) {
         astroGroup.innerHTML = '<div>此角色无命盘数据</div>';
     }
 }
-
-// 3. Add this new function to enforce the 3-option limit
 function limitAstroSelection(charIndex, maxAllowed) {
     const checkboxes = document.querySelectorAll(`#astro-group-${charIndex} input[type="checkbox"]`);
     let checkedCount = 0;
@@ -501,7 +501,8 @@ function limitAstroSelection(charIndex, maxAllowed) {
     }
 }
 
-// 生成回合行动输入表
+
+// 4. 生成回合行动输入表
 function generateRoundInputs() {
     const roundCount = document.getElementById('round-count').value;
     const charCount = document.getElementById('character-count').value;
@@ -528,13 +529,14 @@ function generateRoundInputs() {
     container.innerHTML = table;
 }
 
-// 生成攻略表格
+
+// 5. 根据密探信息输入表和回合行动输入表生成攻略表格
 function generateTables() {
     const stageName = document.getElementById('stage-name').value || "未命名关卡";
     const charCount = parseInt(document.getElementById('character-count').value);
     const roundCount = parseInt(document.getElementById('round-count').value);
 
-    // 生成密探信息表（垂直布局）
+    // 5.1 生成密探信息表（垂直布局）
     let charTable = `<table><thead><tr><th colspan="${charCount + 1}" style="text-align: center;">${stageName} - 密探面板</th></tr><tr><th>属性</th>`;
     
     // 密探名称行
@@ -627,7 +629,7 @@ function generateTables() {
     charTable += `</tbody></table>`;
     document.getElementById('character-table').innerHTML = charTable;
 
-    // 生成回合表
+    // 5.2 生成回合表
     let roundTable = `<table><thead><tr><th colspan="${charCount + 2}" style="text-align: center;">${stageName} - 回合行动</th></tr><tr><th>回合</th>`;
 
     // 添加密探名称
@@ -662,7 +664,8 @@ function generateTables() {
     document.getElementById('round-table').innerHTML = roundTable;
 }
 
-    // 导出表格为PNG
+
+// 6. 导出表格为PNG
     // function exportTablesToPNG() {
     //     const stageName = document.getElementById('stage-name').value || "未命名关卡";
         
