@@ -9,6 +9,8 @@
         font-family: 'Helvetica', 'STHeiti', sans-serif;
         padding: 20px;
         color: #333;
+        transform: scale(0.8);
+        transform-origin: top center;
     }
     h1, h2 {
         text-align: center;
@@ -20,11 +22,11 @@
         margin: auto;
     }
     .panel {
-        background: #ffffff;
+        background: #fcfaf6;
         padding: 20px;
         margin-bottom: 30px;
         border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     input, select, button {
         padding: 6px;
@@ -46,7 +48,9 @@
     table {
         width: auto;
         border-collapse: collapse;
+        margin: 0 auto;
         margin-top: 20px;
+        margin-bottom: 20px;
         box-shadow: 2px 2px 10px #aaa;
         font-family: 'Helvetica', 'STHeiti', serif;
     }
@@ -125,7 +129,7 @@
 
     <div class="panel" style="text-align:center;">
         <button onclick="generateTables()">生成攻略表格</button>
-        <button onclick="exportTablesToPNG()">导出为PNG</button>
+        <!-- <button onclick="exportTablesToPNG()">导出为PNG</button> --> 
     </div>
 
     <div class="panel">
@@ -158,13 +162,17 @@ const spyList = sortByPinyin([
     "张绣", "黄盖", "满宠", "张鲁", "张角", "张闿", "葛洪", "贾诩",
     "严白虎"
 ]);
-const MainStoneList = sortByPinyin([
-    "巨门", "廉贞", "破军", "七杀", "太阳", "太阴", "贪狼", "天府", "天机", "天同", "天相", "武曲", "紫薇"
-]);
-const AuxStoneList = sortByPinyin([
-    "八座", "地劫", "地空", "恩光", "红鸾", "火星", "解神", "铃星", "禄存", "擎羊", "三台", "天贵",
-    "天魁", "天梁", "天马", "天巫", "天刑", "天姚", "天钺", "陀螺", "文昌", "文曲", "阴煞", "右弼", "左辅"
-]);
+const MainStoneList = [
+    "天府", "天机", "武曲", "破军", "贪狼", "七杀", "太阳", "巨门", "紫薇", "天相", "天梁", "天同", "太阴", "廉贞"
+];
+const AuxStoneList = [
+    "解神", "文曲", "文昌", "红鸾",
+    "天魁", "天钺", "左辅", "擎羊", "天马", "右弼",
+    "阴煞", "天巫", "三台",
+    "禄存", "地劫", 
+    "陀螺", "火星", "天姚", "天刑", "地空", "铃星",
+    "八座",  "恩光", "天贵"         
+];
 const AstroList = {
     "陈登·黍王": ["初始能量+1", "防御时恢复生命", "初始能量+3", "河清海晏", "攻击力小幅提升", "最大生命中幅提升", "积善馀庆", "时和岁丰", "普攻伤害小幅增加", "雨顺物康", "攻击力中幅提升", "生命力低时攻击提升"],
     "史子眇·赴烛": ["初始能量+1", "防御时恢复生命", "初始能量+3", "仁心护持", "攻击力小幅提升", "最大生命中幅提升", "念兹在兹", "身魂俱殁", "普攻伤害小幅增加", "重灵降诛", "攻击力中幅提升", "生命力低时攻击提升"],
@@ -405,7 +413,6 @@ function generateCharacterInputs() {
         MainStoneList.forEach(star => {
             table += `
                 <div class="star-item">
-                    <input type="checkbox" id="main-star-${star}-${i}" value="${star}">
                     <label for="main-star-${star}-${i}">${star}</label>
                     <input type="number" id="main-star-level-${star}-${i}" min="1" max="15" style="width:40px;" placeholder="等级">
                 </div>`;
@@ -421,7 +428,6 @@ function generateCharacterInputs() {
         AuxStoneList.forEach(star => {
             table += `
                 <div class="star-item">
-                    <input type="checkbox" id="aux-star-${star}-${i}" value="${star}">
                     <label for="aux-star-${star}-${i}">${star}</label>
                     <input type="number" id="aux-star-level-${star}-${i}" min="1" max="15" style="width:40px;" placeholder="等级">
                 </div>`;
@@ -446,8 +452,9 @@ function generateCharacterInputs() {
     // 初始化命盘选择
     for (let i = 0; i < count; i++) {
         updateAstroOptions(i);
-    }
+    }   
 }
+
 
 // 2. Update the updateAstroOptions function to limit selection to 3
 function updateAstroOptions(index) {
@@ -490,7 +497,7 @@ function limitAstroSelection(charIndex, maxAllowed) {
                 unchecked++;
             }
         });
-        alert(`每个角色最多选择${maxAllowed}个命盘！`);
+        alert(`每个密探最多选择${maxAllowed}个命盘！`);
     }
 }
 
@@ -501,9 +508,10 @@ function generateRoundInputs() {
     const container = document.getElementById('round-inputs');
     container.innerHTML = '';
 
-    let table = `<table><thead><tr><th>回合\\角色</th>`;
+    let table = `<table><thead><tr><th>回合\\密探</th>`;
     for (let i = 0; i < charCount; i++) {
-        table += `<th>角色${i+1}</th>`;
+        const charName = document.getElementById(`char-name-${i}`).value;
+        table += `<th>${charName}</th>`;
     }
     table += `<th>回合备注</th>`; // Add round note column
     table += `</tr></thead><tbody>`;
@@ -526,17 +534,17 @@ function generateTables() {
     const charCount = parseInt(document.getElementById('character-count').value);
     const roundCount = parseInt(document.getElementById('round-count').value);
 
-    // 生成角色信息表（垂直布局）
-    let charTable = `<h2>${stageName} - 密探面板</h2><table><thead><tr><th>属性</th>`;
+    // 生成密探信息表（垂直布局）
+    let charTable = `<table><thead><tr><th colspan="${charCount + 1}" style="text-align: center;">${stageName} - 密探面板</th></tr><tr><th>属性</th>`;
     
-    // 角色名称行
+    // 密探名称行
     for (let i = 0; i < charCount; i++) {
         const charName = document.getElementById(`char-name-${i}`).value;
         charTable += `<th>${charName}</th>`;
     }
     charTable += `</tr></thead><tbody>`;
     
-    // 角色图片行
+    // 密探图片行
     charTable += `<tr><td>密探</td>`;
     for (let i = 0; i < charCount; i++) {
         const charName = document.getElementById(`char-name-${i}`).value;
@@ -544,7 +552,6 @@ function generateTables() {
         charTable += `<td><img src="${imageUrl}" alt="${charName}" style="width:80px;height:80px;"></td>`;
     }
     charTable += `</tr>`;
-
     
     // 基本属性行
     const basicAttributes = [
@@ -569,11 +576,10 @@ function generateTables() {
     for (let i = 0; i < charCount; i++) {
         charTable += `<td>`;
         MainStoneList.forEach(star => {
-            const checkbox = document.getElementById(`main-star-${star}-${i}`);
             const levelInput = document.getElementById(`main-star-level-${star}-${i}`);
-            if (checkbox && checkbox.checked && levelInput && levelInput.value) {
-                charTable += `${star}(${levelInput.value}级)<br>`;
-            }
+            if (levelInput && levelInput.value) {
+            charTable += `${star}(${levelInput.value}级)<br>`;
+            }   
         });
         charTable += `</td>`;
     }
@@ -584,9 +590,8 @@ function generateTables() {
     for (let i = 0; i < charCount; i++) {
         charTable += `<td>`;
         AuxStoneList.forEach(star => {
-            const checkbox = document.getElementById(`aux-star-${star}-${i}`);
             const levelInput = document.getElementById(`aux-star-level-${star}-${i}`);
-            if (checkbox && checkbox.checked && levelInput && levelInput.value) {
+            if (levelInput && levelInput.value) {
                 charTable += `${star}(${levelInput.value}级)<br>`;
             }
         });
@@ -623,16 +628,16 @@ function generateTables() {
     document.getElementById('character-table').innerHTML = charTable;
 
     // 生成回合表
-    let roundTable = `<h2>${stageName} - 回合行动</h2><table><thead><tr><th>回合</th>`;
+    let roundTable = `<table><thead><tr><th colspan="${charCount + 2}" style="text-align: center;">${stageName} - 回合行动</th></tr><tr><th>回合</th>`;
 
-    // 添加角色名称
+    // 添加密探名称
     for (let i = 0; i < charCount; i++) {
         const charName = document.getElementById(`char-name-${i}`).value;
         roundTable += `<th>${charName}</th>`;
     }
     roundTable += `<th>回合备注</th></tr>`; // 添加回合备注列标题
 
-    // 添加角色图片行
+    // 添加密探图片行
     roundTable += `<tr><td>密探</td>`;
     for (let i = 0; i < charCount; i++) {
         const charName = document.getElementById(`char-name-${i}`).value;
@@ -657,90 +662,59 @@ function generateTables() {
     document.getElementById('round-table').innerHTML = roundTable;
 }
 
-// 导出表格为PNG
-// function exportTablesToPNG() {
-//     const stageName = document.getElementById('stage-name').value || "未命名关卡";
+    // 导出表格为PNG
+    // function exportTablesToPNG() {
+    //     const stageName = document.getElementById('stage-name').value || "未命名关卡";
+        
+    //     // Export character table
+    //     const characterTarget = document.createElement('div');
+    //     characterTarget.style.background = '#fff';
+    //     characterTarget.style.width = 'fit-content';
+    //     characterTarget.style.margin = '0 auto';
+    //     characterTarget.style.padding = '20px';
+    //     characterTarget.innerHTML = document.getElementById('character-table').innerHTML;
+    //     document.body.appendChild(characterTarget);
 
-//     // 导出角色表格
-//     const characterTable = document.getElementById('character-table').cloneNode(true); // 克隆表格，避免修改原始 DOM
-//     characterTable.style.background = '#fff';
-//     document.body.appendChild(characterTable);
+    //     html2canvas(characterTarget, {
+    //         scale: 3,
+    //         useCORS: true,
+    //         allowTaint: true,
+    //         backgroundColor: '#ffffff',
+    //         width: characterTarget.offsetWidth,
+    //         height: characterTarget.offsetHeight
+    //     }).then(canvas => {
+    //         const link = document.createElement('a');
+    //         link.download = `${stageName}_密探面板.png`;
+    //         link.href = canvas.toDataURL();
+    //         link.click();
+    //         document.body.removeChild(characterTarget);
+    //     });
+        
+    //     // Export round table
+    //     const roundTarget = document.createElement('div');
+    //     roundTarget.style.background = '#fff';
+    //     roundTarget.style.width = 'fit-content';
+    //     roundTarget.style.margin = '0 auto';
+    //     roundTarget.style.padding = '20px';
+    //     roundTarget.innerHTML = document.getElementById('round-table').innerHTML;
+    //     document.body.appendChild(roundTarget);
 
-//     // 获取表格的实际内容宽度
-//     const characterTableContentWidth = characterTable.scrollWidth;
+    //     html2canvas(roundTarget, {
+    //         scale: 3,
+    //         useCORS: true,
+    //         allowTaint: true,
+    //         backgroundColor: '#ffffff',
+    //         width: roundTarget.offsetWidth,
+    //         height: roundTarget.offsetHeight
+    //     }).then(canvas => {
+    //         const link = document.createElement('a');
+    //         link.download = `${stageName}_回合行动.png`;
+    //         link.href = canvas.toDataURL();
+    //         link.click();
+    //         document.body.removeChild(roundTarget);
+    //     });
+    // }
 
-//     html2canvas(characterTable, {
-//         scale: 1,
-//         width: characterTableContentWidth, // 使用 scrollWidth
-//     }).then(canvas => {
-//         const link = document.createElement('a');
-//         link.download = `${stageName}_角色表格.png`;
-//         link.href = canvas.toDataURL();
-//         link.click();
-//         document.body.removeChild(characterTable);
-//     });
-
-//     // 导出回合表格
-//     const roundTable = document.getElementById('round-table').cloneNode(true); // 克隆表格
-//     roundTable.style.background = '#fff';
-//     document.body.appendChild(roundTable);
-
-//     // 获取回合表格的实际内容宽度
-//     const roundTableContentWidth = roundTable.scrollWidth;
-
-//     html2canvas(roundTable, {
-//         scale: 1,
-//         width: roundTableContentWidth, // 使用 scrollWidth
-//     }).then(canvas => {
-//         const link = document.createElement('a');
-//         link.download = `${stageName}_回合表格.png`;
-//         link.href = canvas.toDataURL();
-//         link.click();
-//         document.body.removeChild(roundTable);
-//     });
-// }
-// 导出表格为PNG
-function exportTablesToPNG() {
-    const stageName = document.getElementById('stage-name').value || "未命名关卡";
-    
-    // 导出角色表格
-    const characterTable = document.createElement('div');
-    characterTable.style.background = '#fff';
-    characterTable.style.display = 'inline-block';  // 让表格仅占用其内容所需的宽度
-    characterTable.innerHTML = document.getElementById('character-table').innerHTML;
-    document.body.appendChild(characterTable);
-
-    html2canvas(characterTable, {
-        scale: 2,  // 可选：增加缩放比例来提高图片清晰度
-        width: characterTable.offsetWidth, // 控制截图宽度
-        height: characterTable.offsetHeight, // 控制截图高度
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `${stageName}_角色表格.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-        document.body.removeChild(characterTable);  // 移除临时创建的 div
-    });
-
-    // 导出回合表格
-    const roundTable = document.createElement('div');
-    roundTable.style.background = '#fff';
-    roundTable.style.display = 'inline-block';  // 让表格仅占用其内容所需的宽度
-    roundTable.innerHTML = document.getElementById('round-table').innerHTML;
-    document.body.appendChild(roundTable);
-
-    html2canvas(roundTable, {
-        scale: 2,  // 可选：增加缩放比例来提高图片清晰度
-        width: roundTable.offsetWidth, // 控制截图宽度
-        height: roundTable.offsetHeight, // 控制截图高度
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `${stageName}_回合表格.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-        document.body.removeChild(roundTable);  // 移除临时创建的 div
-    });
-}
 </script>
 
 </body>
