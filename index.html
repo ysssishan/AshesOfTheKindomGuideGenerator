@@ -658,45 +658,87 @@ function generateTables() {
 }
 
 // 导出表格为PNG
+// function exportTablesToPNG() {
+//     const stageName = document.getElementById('stage-name').value || "未命名关卡";
+
+//     // 导出角色表格
+//     const characterTable = document.getElementById('character-table').cloneNode(true); // 克隆表格，避免修改原始 DOM
+//     characterTable.style.background = '#fff';
+//     document.body.appendChild(characterTable);
+
+//     // 获取表格的实际内容宽度
+//     const characterTableContentWidth = characterTable.scrollWidth;
+
+//     html2canvas(characterTable, {
+//         scale: 1,
+//         width: characterTableContentWidth, // 使用 scrollWidth
+//     }).then(canvas => {
+//         const link = document.createElement('a');
+//         link.download = `${stageName}_角色表格.png`;
+//         link.href = canvas.toDataURL();
+//         link.click();
+//         document.body.removeChild(characterTable);
+//     });
+
+//     // 导出回合表格
+//     const roundTable = document.getElementById('round-table').cloneNode(true); // 克隆表格
+//     roundTable.style.background = '#fff';
+//     document.body.appendChild(roundTable);
+
+//     // 获取回合表格的实际内容宽度
+//     const roundTableContentWidth = roundTable.scrollWidth;
+
+//     html2canvas(roundTable, {
+//         scale: 1,
+//         width: roundTableContentWidth, // 使用 scrollWidth
+//     }).then(canvas => {
+//         const link = document.createElement('a');
+//         link.download = `${stageName}_回合表格.png`;
+//         link.href = canvas.toDataURL();
+//         link.click();
+//         document.body.removeChild(roundTable);
+//     });
+// }
+// 导出表格为PNG
 function exportTablesToPNG() {
     const stageName = document.getElementById('stage-name').value || "未命名关卡";
-
+    
     // 导出角色表格
-    const characterTable = document.getElementById('character-table').cloneNode(true); // 克隆表格，避免修改原始 DOM
+    const characterTable = document.createElement('div');
     characterTable.style.background = '#fff';
+    characterTable.style.display = 'inline-block';  // 让表格仅占用其内容所需的宽度
+    characterTable.innerHTML = document.getElementById('character-table').innerHTML;
     document.body.appendChild(characterTable);
 
-    // 获取表格的实际内容宽度
-    const characterTableContentWidth = characterTable.scrollWidth;
-
     html2canvas(characterTable, {
-        scale: 1,
-        width: characterTableContentWidth, // 使用 scrollWidth
+        scale: 2,  // 可选：增加缩放比例来提高图片清晰度
+        width: characterTable.offsetWidth, // 控制截图宽度
+        height: characterTable.offsetHeight, // 控制截图高度
     }).then(canvas => {
         const link = document.createElement('a');
         link.download = `${stageName}_角色表格.png`;
         link.href = canvas.toDataURL();
         link.click();
-        document.body.removeChild(characterTable);
+        document.body.removeChild(characterTable);  // 移除临时创建的 div
     });
 
     // 导出回合表格
-    const roundTable = document.getElementById('round-table').cloneNode(true); // 克隆表格
+    const roundTable = document.createElement('div');
     roundTable.style.background = '#fff';
+    roundTable.style.display = 'inline-block';  // 让表格仅占用其内容所需的宽度
+    roundTable.innerHTML = document.getElementById('round-table').innerHTML;
     document.body.appendChild(roundTable);
 
-    // 获取回合表格的实际内容宽度
-    const roundTableContentWidth = roundTable.scrollWidth;
-
     html2canvas(roundTable, {
-        scale: 1,
-        width: roundTableContentWidth, // 使用 scrollWidth
+        scale: 2,  // 可选：增加缩放比例来提高图片清晰度
+        width: roundTable.offsetWidth, // 控制截图宽度
+        height: roundTable.offsetHeight, // 控制截图高度
     }).then(canvas => {
         const link = document.createElement('a');
         link.download = `${stageName}_回合表格.png`;
         link.href = canvas.toDataURL();
         link.click();
-        document.body.removeChild(roundTable);
+        document.body.removeChild(roundTable);  // 移除临时创建的 div
     });
 }
 </script>
