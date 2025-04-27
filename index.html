@@ -667,7 +667,14 @@ function exportTablesToPNG() {
     characterTable.innerHTML = document.getElementById('character-table').innerHTML;
     document.body.appendChild(characterTable);
 
-    html2canvas(characterTable).then(canvas => {
+    // 设置表格最大宽度，使其自适应
+    characterTable.style.maxWidth = '100%'; // 自适应容器宽度
+    characterTable.style.overflowX = 'auto'; // 如果内容超出，启用水平滚动条（可选）
+
+    html2canvas(characterTable, {
+        scale: 2, // 可选：增加缩放比例来提高图片清晰度
+        width: characterTable.offsetWidth, // 控制截图宽度
+    }).then(canvas => {
         const link = document.createElement('a');
         link.download = `${stageName}_角色表格.png`;
         link.href = canvas.toDataURL();
@@ -681,7 +688,14 @@ function exportTablesToPNG() {
     roundTable.innerHTML = document.getElementById('round-table').innerHTML;
     document.body.appendChild(roundTable);
 
-    html2canvas(roundTable).then(canvas => {
+    // 设置回合表格的自适应宽度
+    roundTable.style.maxWidth = '100%'; // 自适应容器宽度
+    roundTable.style.overflowX = 'auto'; // 如果内容超出，启用水平滚动条（可选）
+
+    html2canvas(roundTable, {
+        scale: 2, // 可选：增加缩放比例来提高图片清晰度
+        width: roundTable.offsetWidth, // 控制截图宽度
+    }).then(canvas => {
         const link = document.createElement('a');
         link.download = `${stageName}_回合表格.png`;
         link.href = canvas.toDataURL();
