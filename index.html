@@ -660,17 +660,33 @@ function generateTables() {
 // 导出表格为PNG
 function exportTablesToPNG() {
     const stageName = document.getElementById('stage-name').value || "未命名关卡";
-    const target = document.createElement('div');
-    target.style.background = '#fff';
-    target.innerHTML = document.getElementById('character-table').innerHTML + document.getElementById('round-table').innerHTML;
-    document.body.appendChild(target);
+    
+    // 导出角色表格
+    const characterTable = document.createElement('div');
+    characterTable.style.background = '#fff';
+    characterTable.innerHTML = document.getElementById('character-table').innerHTML;
+    document.body.appendChild(characterTable);
 
-    html2canvas(target).then(canvas => {
+    html2canvas(characterTable).then(canvas => {
         const link = document.createElement('a');
-        link.download = `${stageName}_攻略.png`;
+        link.download = `${stageName}_角色表格.png`;
         link.href = canvas.toDataURL();
         link.click();
-        document.body.removeChild(target);
+        document.body.removeChild(characterTable); // 移除临时创建的 div
+    });
+
+    // 导出回合表格
+    const roundTable = document.createElement('div');
+    roundTable.style.background = '#fff';
+    roundTable.innerHTML = document.getElementById('round-table').innerHTML;
+    document.body.appendChild(roundTable);
+
+    html2canvas(roundTable).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${stageName}_回合表格.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        document.body.removeChild(roundTable); // 移除临时创建的 div
     });
 }
 </script>
